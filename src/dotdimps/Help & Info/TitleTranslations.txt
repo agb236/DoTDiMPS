@@ -1,0 +1,32 @@
+
+
+
+Final
+    Structural Alignment
+        two PDB to seq
+            one PDB to seq
+        Align3D
+    Overlap
+
+        NEAM = NEAMReparametrizationParallel
+            ResidueMinDist = MakeDminProteinReparametrizedParallel
+            PairwiseDiff = MakeDP
+
+        ScoreSelfint = ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP_Place_Holder
+            Type1Move = IsContractableType1ReparametrizationParallel
+                IntersectionOrigo = intersection_origo_triangle_line_segment
+                dist_pts_to_line = d_points2line
+            Type2Move = IsContractableType2ReparametrizationParallel
+                IntersectionOrigo = intersection_origo_triangle_line_segment
+                IntersectionTriangle = IntersectionTriangle_LineSegment
+            PriceEstEndContraction = EndContractionPriceEst
+            maxWeightMatching = max_weight_matching
+            dist_pts = distPP
+
+        AlignmentMetaData = AlignmentMetaData
+
+        SelfIntersectionTransversal = SelfIntersectionTransversal
+            PlanarityTransversal = PlanarityTransversal
+
+        MakeFigure = MakeSelfIntcFigureV3
+            ReparametrizationTicks = MakeReParTicks
