@@ -6,27 +6,28 @@ Final
         two PDB to seq
             one PDB to seq
         Align3D
-    Overlap
-
-        NEAM = NEAMReparametrizationParallel
-            ResidueMinDist = MakeDminProteinReparametrizedParallel
-            PairwiseDiff = MakeDP
-
-        ScoreSelfint = ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP_Place_Holder
-            Type1Move = IsContractableType1ReparametrizationParallel
-                IntersectionOrigo = intersection_origo_triangle_line_segment
-                dist_pts_to_line = d_points2line
-            Type2Move = IsContractableType2ReparametrizationParallel
-                IntersectionOrigo = intersection_origo_triangle_line_segment
-                IntersectionTriangle = IntersectionTriangle_LineSegment
-            PriceEstEndContraction = EndContractionPriceEst
-            maxWeightMatching = max_weight_matching
-            dist_pts = distPP
+    TopCheck = OverlapandSelfintersectParallelV3
 
         AlignmentMetaData = AlignmentMetaData
 
-        SelfIntersectionTransversal = SelfIntersectionTransversal
-            PlanarityTransversal = PlanarityTransversal
+        NEAM = NEAMReparametrizationParallel (LSPHNF = LineSegmentPairHomotopyNeighbourFilter)
+            ResidueMinDist = MakeDminProteinReparametrizedParallel (RMD)
+            PairwiseDiff = MakeDP (PV = PositionVectors)
+        
+        ProjektionCheck (LPF = LineProjectionFilter)
+
+        SelfIntersectionTransversal = SelfIntersectionTransversal (IDH = IntersectionsDuringHomotopy)
+            PlanarityTransversal = PlanarityTransversal (TPT = TransversalPlanarityTime)
+
+        ScoreSelfint = ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP (SI = ScoreIntersections)
+            Type1Move = IsContractableType1ReparametrizationParallel (ICT1 = IsContractableType1)
+                IntersectionOrigo = intersection_origo_triangle_line_segment (ILSTFO = IntersectionLineSegmentTriangleFromOrigo)
+                dist_pts_to_line = d_points2line (DPTL = DistancePointsToLine)
+            Type2Move = IsContractableType2ReparametrizationParallel (ICT2 = IsContractableType2)
+                IntersectionOrigo = intersection_origo_triangle_line_segment (ILSTFO = IntersectionLineSegmentTriangleFromOrigo)
+                IntersectionTriangle = IntersectionTriangle_LineSegment (ILST = IntersectionLineSegmentTriangle)
+            EndContractionPriceEst = PriceEstEndContraction (PEEC)
+            max_weight_matching = maxWeightMatching (MWM = MaxWeightMatching)
 
         MakeFigure = MakeSelfIntcFigureV3
-            ReparametrizationTicks = MakeReParTicks
+            ReparametrizationTicks = MakeReParTicks (MRT = MakeReparametrizationTicks)
