@@ -1,6 +1,3 @@
-
-
-
 Final
     Structural Alignment
         two PDB to seq
@@ -31,3 +28,4 @@ Final
 
         MakeFigure = MakeSelfIntcFigureV3
             ReparametrizationTicks = MakeReParTicks (MRT = MakeReparametrizationTicks)
+
