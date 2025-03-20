@@ -1,11 +1,15 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "Type1 and 2 sub"))
+
 import numpy as np
-import intersection_origo_triangle_line_segment as iotls
-import IntersectionTriangle_LineSegment as itls
-import d_points2line as dp2l
+# import intersection_origo_triangle_line_segment as iotls
+# import IntersectionTriangle_LineSegment as itls
+import dist_pts_to_line as dpl
 import bisect
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from intersection_origo_triangle_line_segment import intersection_origo_triangle_line_segment
+# import matplotlib.pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
+from IntersectionOrigo import intersection_origo_triangle_line_segment
 import plotly.graph_objects as go
 
 def IsContractableType2ReparametrizationParallel(M, M0, M1, i, makker, P, P1, maxlen, chain_change):

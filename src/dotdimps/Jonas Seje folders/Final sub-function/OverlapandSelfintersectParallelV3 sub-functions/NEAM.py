@@ -4,8 +4,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "NEAM_sub"))
 
 
 import numpy as np
-import MakeDminProteinReparametrizedParallel as mdprp
-import MakeDP as mdp
+from ResidueMinDist import MakeDminProteinReparametrizedParallel as mdprp
+from PairwiseDiff import MakeDP as mdp
 
 def NEAMReparametrizationParallel(P1, P2, RePar1, RePar2, IsAligned, Smoothning):
     """

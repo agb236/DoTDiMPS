@@ -4,13 +4,14 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "Final sub-function"))
 
 
 import numpy as np
-from Structural_AlignmentV2 import structural_alignment
-from OverlapandSelfintersectParallelV3 import OverlapandSelfintersectParallelV3
+from StructuralAlignmentV2 import structural_alignment
+from TopCheck import OverlapandSelfintersectParallelV3
+sys.path.append(os.path.join(os.path.dirname(__file__), "Final sub-function/Structural_AlignmentV2 sub-functions"))
 from PDBP_to_seq import one_PDB_to_seq
 import timeit
 
 
-Adam = 1
+Adam = 0
 if Adam == 1:
     pdb_file1 = "/Users/agb/Desktop/6. Semester/Bachelorprojekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRUA_hexamer_positive.pdb"
     pdb_file2 = "/Users/agb/Desktop/6. Semester/Bachelorprojekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRU1_hexamer_negative.pdb"

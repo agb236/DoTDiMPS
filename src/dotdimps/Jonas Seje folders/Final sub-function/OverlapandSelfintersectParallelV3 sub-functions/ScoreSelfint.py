@@ -8,10 +8,10 @@ from scipy import sparse
 from scipy.optimize import linear_sum_assignment
 from IsContractableType1ReparametrizationParallel import IsContractableType1ReparametrizationParallel
 from IsContractableType2ReparametrizationParallel import IsContractableType2ReparametrizationParallel
-from PriceEstEndContraction import PriceEstEndContraction
+from EndContractionPriceEst import PriceEstEndContraction
 from scipy.interpolate import splrep, PPoly
-from distPP import distPP
-from maxWeightMatching import maxWeightMatching
+# from distPP import distPP
+from max_weight_matching import maxWeightMatching
 
 def ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP(selfintc, selfintcu, selfintcv, selfintcs, length, P, P1, RePar1, RePar2, IsAligned, chain1, chain2, maxendcontraction, maxlen, chain_change):
     """

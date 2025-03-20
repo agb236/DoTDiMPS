@@ -1,6 +1,10 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "Type1 and 2 sub"))
+
 import numpy as np
-from intersection_origo_triangle_line_segment import intersection_origo_triangle_line_segment
-import d_points2line as dpl
+from IntersectionOrigo import intersection_origo_triangle_line_segment
+import dist_pts_to_line as dpl
 
 def IsContractableType1ReparametrizationParallel(M, M0, M1, i, P, P1, maxlen, chain_change):
     # Initialize the flag for finding the number of Omega1_2 obstructions

@@ -7,10 +7,11 @@ import time
 import timeit
 import copy
 from NEAM import NEAMReparametrizationParallel
-from ScoreSelfInt import ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP
+from ScoreSelfint import ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP
 from AlignmentMetaData import AlignmentMetaData
-from SelfintersectionTransversal import SelfintersectionTransversal
+from SelfIntersectionTransversal import SelfintersectionTransversal
 from MakeFigure import MakeSelfIntcFigureV3
+
 
 def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4, IsAligned, P1org, P2org, NresAverage, options, False_lines, P1, P2, RePar1, RePar2, IsAligned_org, Insert_points_P1, Insert_points_P, b_factors1, b_factors2):
     start = timeit.timeit() 
