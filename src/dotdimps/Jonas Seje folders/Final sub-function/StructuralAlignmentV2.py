@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "Structural_AlignmentV2 sub-functions"))
+
 from Bio.PDB import PDBParser
 import Bio.PDB
 from Bio.SeqUtils import IUPACData
@@ -11,6 +15,8 @@ from Align_3D import Align_3D
 import plotly.graph_objects as go
 import itertools
 import copy
+
+
 
 def structural_alignment(pdb_file1, pdb_file2, makefigure=1):
     """
