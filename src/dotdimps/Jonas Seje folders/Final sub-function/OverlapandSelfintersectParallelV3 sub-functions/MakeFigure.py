@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "MakeFigure_sub"))
+
 import numpy as np
 import matplotlib.pyplot as plt
 import MakeReParTicks as MRPT

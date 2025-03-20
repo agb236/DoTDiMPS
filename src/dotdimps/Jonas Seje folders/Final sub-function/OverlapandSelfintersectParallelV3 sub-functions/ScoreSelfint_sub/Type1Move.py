@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "Type1 and Type2 sub"))
+
 import numpy as np
 from intersection_origo_triangle_line_segment import intersection_origo_triangle_line_segment
 import d_points2line as dpl
