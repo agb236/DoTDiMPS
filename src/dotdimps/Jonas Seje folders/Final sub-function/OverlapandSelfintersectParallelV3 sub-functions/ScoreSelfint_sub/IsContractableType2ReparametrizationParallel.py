@@ -207,7 +207,7 @@ def IsContractableType2ReparametrizationParallel(M, M0, M1, i, makker, P, P1, ma
                     return ud
 
     # Calculate the distance from the points to the line and return the result
-    dists = dp2l.d_points2line(pts, pts[:, 0], pts[:, pts1.shape[1]-1])
+    dists = dpl.d_points2line(pts, pts[:, 0], pts[:, pts1.shape[1]-1])
     ud = [np.sum(dists) * 2, lengRep]
 
     return ud

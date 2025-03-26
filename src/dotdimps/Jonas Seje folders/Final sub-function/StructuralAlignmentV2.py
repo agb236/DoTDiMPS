@@ -91,8 +91,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     if len(chain_name1) != len(chain_name2):
         raise ValueError("The number of chains in the two structures is not equal")
     
-
-
     distance_matrix1 = np.zeros((len(chain_name1), len(chain_name1)))
     distance_matrix2 = np.zeros((len(chain_name2), len(chain_name2)))
     nr_chains = len(chain_name1)

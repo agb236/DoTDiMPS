@@ -53,8 +53,14 @@ def ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP(selfintc, selfintcu
     M0, M1 = M.copy(), M.copy()
     
     # Compute interpolated parameterizations
-    pp1 = PPoly.from_spline(splrep(np.arange(RePar1.shape[0]), RePar1, k=3))
-    pp2 = PPoly.from_spline(splrep(np.arange(RePar2.shape[0]), RePar2, k=3))
+    n1 = np.atleast_2d(RePar1).shape[1]
+    tck = splrep(np.arange(n1), RePar1, k = 3)
+    pp1 = PPoly.from_spline(tck)
+    
+    n2 = np.atleast_2d(RePar2).shape[1]
+    tck = splrep(np.arange(n2), RePar2, k = 3)
+    pp2 = PPoly.from_spline(tck)
+
     M0[:,1:5] = pp1(M[:,1:5])
     M1[:,1:5] = pp2(M[:,1:5])
     
