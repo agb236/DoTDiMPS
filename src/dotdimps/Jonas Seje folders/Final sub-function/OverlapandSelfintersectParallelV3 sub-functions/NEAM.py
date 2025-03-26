@@ -22,10 +22,10 @@ def NEAMReparametrizationParallel(P1, P2, RePar1, RePar2, IsAligned, Smoothning)
         tuple: (overlap, overlapaligned, overlapGap, overlapGapWeight)
     """
     # Compute minimal allowed distances between residues
-    Dmin = mdprp.MakeDminProteinReparametrizedParallel(RePar1, RePar2, Smoothning)
+    Dmin = mdprp(RePar1, RePar2, Smoothning)
     
     # Compute pairwise differences for both protein structures
-    dP1, dP2 = mdp.MakeDP(P1), mdp.MakeDP(P2)
+    dP1, dP2 = mdp(P1), mdp(P2)
     l1 = np.linalg.norm(dP1, axis=2)  # Compute Euclidean norms
     ddPNormSqr = np.sum((dP1 - dP2) ** 2, axis=2)
     dot12 = np.sum(dP1 * dP2, axis=2)
