@@ -28,8 +28,8 @@ def MakeSelfIntcFigureV3(P, P1, selfintc, overlap, ud_essensials, RePar1, RePar2
     plt.ylabel('Index in ' + myoptions["FileName2"])
     plt.xlabel('Index in ' + myoptions["FileName1"])
     plt.title('Overlap in Ångström, RMSD = ' + str(np.round(np.sqrt(np.sum((P - P1)**2) / P.shape[0]), 2)) + 'Å')
-    plt.xlim(0, overlap.shape[0]+10)
-    plt.ylim(0, overlap.shape[1]+10)
+    plt.xlim(0, overlap.shape[0])
+    plt.ylim(0, overlap.shape[1])
     plt.xticks(chain_change, chain_change.astype(int))
     plt.yticks(chain_change, chain_change.astype(int))
     # plt.colorbar()
@@ -82,12 +82,7 @@ def MakeSelfIntcFigureV3(P, P1, selfintc, overlap, ud_essensials, RePar1, RePar2
             plt.axvline(x=chain_change[i], color='black', linestyle='-')
             plt.axhline(y=chain_change[i], color='black', linestyle='-')
 
-    # create list of chian names as strings
-    # chain_namesX = []
-    # chain_namesY = []
-    # for i in range(len(chain_change)-1):
-    #     chain_namesX.append('Chain' + str(i+1))
-    #     chain_namesY.append('Chain' + chr(65 + i))
+
     # Add second axis to show the chain change residues
     ax2 = plt.twiny()
     ax2.set_xlim(0, overlap.shape[0]+10)

@@ -218,6 +218,16 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
     if makefigure == 1:
         MakeSelfIntcFigureV3(P1_tot, P2_tot, selfintc, overlap, Udessentials, RePar1, RePar2, options, chain_change2, Intersecting_chain_number_i, Intersecting_chain_number_j, b_factors1, b_factors2, chain_name1, chain_name2)
     #print("Number of essential self-intersections: ", Udessentials.shape[0])
+
+    Intersectin_table = np.zeros((len(P1.keys()), len(P1.keys())))
+
+    for i in range(len(chain_change2)-1):
+        for j in range(len(chain_change2)-1):
+            #Find number of intersections with indexes between chain_change2[i] and chain_change2[i+1] and chain_change2[j] and chain_change2[j+1]
+            Intersectin_table[i,j] = len(np.where((Udessentials[:,0] >= chain_change2[i]) & (Udessentials[:,0] < chain_change2[i+1]) & (Udessentials[:,1] >= chain_change2[j]) & (Udessentials[:,1] < chain_change2[j+1]))[0])
+
+    Intersectin_table = Intersectin_table[::-1]
+
     ud = [Outs, rms1, rms1Aligned, rms2, rms2Aligned, GDT_TS, TM, sumoverlap, PotSelfIntc, sumselfintc, AlignmentMetaDataOut]
-    ud = [Udessentials, len(np.where(selfintc)[0])]
+    ud = [Udessentials, len(np.where(selfintc)[0]), Intersectin_table]
     return ud
