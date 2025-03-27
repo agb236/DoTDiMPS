@@ -8,20 +8,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions/Stru
 from PDBP_to_seq import one_PDB_to_seq
 
 # Get the absolute path to the project root
-current = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+current = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # Construct the path to the raw data folder
 data_path = os.path.join(current, "data", "raw")
 
-Adam = 0
-if Adam == 1:
-    #pdb_file1 = "/Users/agb/Desktop/6. Semester/Bachelorprojekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRUA_hexamer_positive.pdb"
-    #pdb_file2 = "/Users/agb/Desktop/6. Semester/Bachelorprojekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRU1_hexamer_negative.pdb"
-    pdb_file1 = os.path.join(data_path, "CRUA_hexamer_positive.pdb")
-    pdb_file2 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
-else:
-    pdb_file1 = "src/dotdimps/main/PDB Files/CRUA_hexamer_positive.pdb"
-    pdb_file2 = "src/dotdimps/main/PDB Files/CRU1_hexamer_negative.pdb"
+pdb_file1 = os.path.join(data_path, "CRUA_hexamer_positive.pdb")
+pdb_file2 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
 
 P1, P2, RePar1, RePar2, IsAligned, NresAverage, P1Less4, P2Less4, RePar1Less4, RePar2Less4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2 =  structural_alignment(pdb_file1, pdb_file2, makefigure = 1)
 # options = {'Smoothning': 0, 'AllowEndContractions': 0, 'MaxLength': 5, 'MakeFigures': 1}
