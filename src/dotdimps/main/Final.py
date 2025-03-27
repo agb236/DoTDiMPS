@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), "Final sub-function"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions"))
 
 
 import numpy as np

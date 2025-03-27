@@ -1,1 +1,0 @@
-# Template script som f.eks. kan bruges til den færdige model
