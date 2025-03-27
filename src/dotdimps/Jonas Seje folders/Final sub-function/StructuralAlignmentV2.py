@@ -322,7 +322,7 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     P2org_tot = np.concatenate(list(P2_org.values()), axis = 0)
     NresAverage = (len(P1org_tot)+len(P2org_tot))/2
 
-    return P1, P, repar1, repar, is_aligned, NresAverage, P1Less4, PLess4, RePar1Less4, ReParLess4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2
+    return P1, P, repar1, repar, is_aligned, NresAverage, P1Less4, PLess4, RePar1Less4, ReParLess4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2
 
 
 #pdb_file1 = "/Users/agb/Desktop/Bachelor projekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRUA_hexamer_positive.pdb"
