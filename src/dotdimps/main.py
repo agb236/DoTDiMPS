@@ -1,20 +1,24 @@
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions"))
-
-
 import numpy as np
+sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions"))
 from StructuralAlignmentV2 import structural_alignment
 from TopCheck import OverlapandSelfintersectParallelV3
 sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions/Structural_AlignmentV2 sub-functions"))
 from PDBP_to_seq import one_PDB_to_seq
 
+# Get the absolute path to the project root
+current = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+# Construct the path to the raw data folder
+data_path = os.path.join(current, "data", "raw")
 
 Adam = 0
 if Adam == 1:
-    pdb_file1 = "/Users/agb/Desktop/6. Semester/Bachelorprojekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRUA_hexamer_positive.pdb"
-    pdb_file2 = "/Users/agb/Desktop/6. Semester/Bachelorprojekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRU1_hexamer_negative.pdb"
-
+    #pdb_file1 = "/Users/agb/Desktop/6. Semester/Bachelorprojekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRUA_hexamer_positive.pdb"
+    #pdb_file2 = "/Users/agb/Desktop/6. Semester/Bachelorprojekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRU1_hexamer_negative.pdb"
+    pdb_file1 = os.path.join(data_path, "CRUA_hexamer_positive.pdb")
+    pdb_file2 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
 else:
     pdb_file1 = "src/dotdimps/main/PDB Files/CRUA_hexamer_positive.pdb"
     pdb_file2 = "src/dotdimps/main/PDB Files/CRU1_hexamer_negative.pdb"
