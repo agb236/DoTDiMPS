@@ -11,7 +11,7 @@ from SelfIntersectionTransversal import SelfintersectionTransversal
 from MakeFigure import MakeSelfIntcFigureV3
 
 
-def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4, IsAligned, P1org, P2org, NresAverage, options, False_lines, P1, P2, RePar1, RePar2, IsAligned_org, Insert_points_P1, Insert_points_P, b_factors1, b_factors2):
+def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4, IsAligned, P1org, P2org, NresAverage, options, False_lines, P1, P2, RePar1, RePar2, IsAligned_org, Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2):
     Smoothning = options['Smoothning']
     AllowEndContractions = options['AllowEndContractions']
     AllMaxLengths = options['MaxLength']
@@ -216,7 +216,7 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
     Udessentials = Udessentials[1:,:]
     #print("Number of essential self-intersections: ", Udessentials.shape[0])
     if makefigure == 1:
-        MakeSelfIntcFigureV3(P1_tot, P2_tot, selfintc, overlap, Udessentials, RePar1, RePar2, options, chain_change2, Intersecting_chain_number_i, Intersecting_chain_number_j, b_factors1, b_factors2)
+        MakeSelfIntcFigureV3(P1_tot, P2_tot, selfintc, overlap, Udessentials, RePar1, RePar2, options, chain_change2, Intersecting_chain_number_i, Intersecting_chain_number_j, b_factors1, b_factors2, chain_name1, chain_name2)
     #print("Number of essential self-intersections: ", Udessentials.shape[0])
     ud = [Outs, rms1, rms1Aligned, rms2, rms2Aligned, GDT_TS, TM, sumoverlap, PotSelfIntc, sumselfintc, AlignmentMetaDataOut]
     ud = [Udessentials, len(np.where(selfintc)[0])]

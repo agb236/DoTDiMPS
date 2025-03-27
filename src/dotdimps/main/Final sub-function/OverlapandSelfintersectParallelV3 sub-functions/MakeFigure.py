@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 def expand_array(arr):
             return [i for num in arr for i in range(num, num + 5)]
 
-def MakeSelfIntcFigureV3(P, P1, selfintc, overlap, ud_essensials, RePar1, RePar2, myoptions, chain_change, Intersecting_chain_number_i ,Intersecting_chain_number_j, b_factors1, b_factors2):
+def MakeSelfIntcFigureV3(P, P1, selfintc, overlap, ud_essensials, RePar1, RePar2, myoptions, chain_change, Intersecting_chain_number_i ,Intersecting_chain_number_j, b_factors1, b_factors2, chain_name1, chain_name2):
 
     RPxtixlables, RPxticks= MRPT.MakeReParTicks(RePar1,8)
     RPytixlables, RPyticks= MRPT.MakeReParTicks(RePar2,8)
@@ -83,22 +83,22 @@ def MakeSelfIntcFigureV3(P, P1, selfintc, overlap, ud_essensials, RePar1, RePar2
             plt.axhline(y=chain_change[i], color='black', linestyle='-')
 
     # create list of chian names as strings
-    chain_namesX = []
-    chain_namesY = []
-    for i in range(len(chain_change)-1):
-        chain_namesX.append('Chain' + str(i+1))
-        chain_namesY.append('Chain' + chr(65 + i))
+    # chain_namesX = []
+    # chain_namesY = []
+    # for i in range(len(chain_change)-1):
+    #     chain_namesX.append('Chain' + str(i+1))
+    #     chain_namesY.append('Chain' + chr(65 + i))
     # Add second axis to show the chain change residues
     ax2 = plt.twiny()
     ax2.set_xlim(0, overlap.shape[0]+10)
     ax2.set_xticks(chain_change[:-1]+1/2*np.mean(np.diff(chain_change[:-1])))
-    ax2.set_xticklabels(chain_namesX)
+    ax2.set_xticklabels(chain_name1)
     # ax2.set_xlabel('Chain change residues')
 
     ax3 = plt.twinx()
     ax3.set_ylim(0, overlap.shape[1]+10)
     ax3.set_yticks(chain_change[:-1]+1/2*np.mean(np.diff(chain_change[:-1])))
-    ax3.set_yticklabels(chain_namesY)
+    ax3.set_yticklabels(chain_name2)
     # ax3.set_ylabel('Chain change residues')
 
     # make diagonal line
