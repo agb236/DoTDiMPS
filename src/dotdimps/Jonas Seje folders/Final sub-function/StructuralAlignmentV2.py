@@ -134,8 +134,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     chain_name1 = list(seq1.keys())
     chain_name2 = list(seq2_Reorder.keys())
 
-
-
     # Start alignment
     aligner = Align.PairwiseAligner()
 
@@ -143,12 +141,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     for chain1, chain2 in zip(chain_name1, chain_name2):
         alignments = aligner.align(seq1[chain1], seq2[chain2])
         align[chain1] = alignments[0]
-        # print("Score = %.1f:" % alignments[0].score)
-        # remove first and last not aligned part of the alignment
-
-
-
-
     
     atoms_to_be_aligned1 = {}
     atoms_to_be_aligned2 = {}
@@ -162,9 +154,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
 
         atoms_to_be_aligned1[chain1].extend(range((align[chain1].aligned[0][Num_holes-1][0]),(align[chain1].aligned[0][Num_holes-1][1])+1))
         atoms_to_be_aligned2[chain2].extend(range((align[chain1].aligned[1][Num_holes-1][0]),(align[chain1].aligned[1][Num_holes-1][1])+1))
-
-
-    
 
     for chain in P1:
         P1[chain] = P1[chain].tolist()
@@ -189,7 +178,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
         P1[chain] = P1_array
         P2_Reorder[chain] = P2_array
 
-
     mean1 = np.mean(np.concatenate(list(P1.values()),axis=0),axis=0)
     mean2 = np.mean(np.concatenate(list(P2_Reorder.values()),axis=0),axis=0)
     
@@ -210,7 +198,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     aligment_points1 = aligment_points1[1:,:]
     aligment_points2 = aligment_points2[1:,:]
 
-
     Transformed_points, R, rmsd = Align_3D(aligment_points1, aligment_points2)
 
     P = {}
@@ -218,8 +205,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     for chain1, chain2 in zip(P1, P2_Reorder):
         P[chain1] = Transformed_points[start:start+len(atoms_to_be_aligned2[chain1])-1]
         start += len(atoms_to_be_aligned2[chain1])
-        # atoms_not_aligned = find_missing_numbers(atoms_to_be_aligned2[chain1], len(P[chain1]))
-        # atoms_not_aligned = [i for i, x in enumerate(align[chain1][0]) if x == "-"]
         
         # Find the difference between the two sets
         atoms_not_aligned = set(range(0,len(P1[chain1]))) - set(atoms_to_be_aligned2[chain1])
@@ -237,11 +222,9 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     repar = {}
     repar1 = {}
 
-
     for chain in chain_name1:
         repar[chain] = np.linspace(0,len(P[chain])-1,len(P[chain])).tolist()
         repar1[chain] = np.linspace(0,len(P1[chain])-1,len(P1[chain])).tolist()
-
 
     indices_target = {}
     indices_query = {}
@@ -249,11 +232,9 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     for key in P:
         indices_target[key] = [i for i, x in enumerate(align[key][1]) if x == "-"]
         indices_query[key]  = [i for i, x in enumerate(align[key][0]) if x == "-"]
-        # print(indices_target[key])
-        # print(indices_query[key])
+
         Factor_hole_target, Index_hole_target  = find_increasing_subarrays(indices_target[key])
         Factor_hole_query, Index_hole_query = find_increasing_subarrays(indices_query[key])
-
 
         for i in reversed(range(len(indices_target[key]))):
             index = indices_target[key][i]
@@ -263,7 +244,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
                         alpha*P[key][index][2]+(1-alpha)*P[key][index+1][2]]
             P[key].insert(index+1,new_point)
             repar[key].insert(index+1-(Factor_hole_target[i]-1),index+alpha-(Factor_hole_target[i]-1))
-            # print(repar1[key][(index+i-5):(index+i+5)])
 
         for i in reversed(range(len(indices_query[key]))):
             index = indices_query[key][i]
@@ -281,11 +261,10 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     PLess4 = copy.deepcopy(P)
     P1Less4 = copy.deepcopy(P1)
 
-    
     ReParLess4 = copy.deepcopy(repar)
     RePar1Less4 = copy.deepcopy(repar1)
-    print("Length of repar[Chain_A]: ", len(repar["Chain_A"]))
-    print("Length of repar1[Chain_A]: ", len(repar1["Chain_A"]))
+    #print("Length of repar[Chain_A]: ", len(repar["Chain_A"]))
+    #print("Length of repar1[Chain_A]: ", len(repar1["Chain_A"]))
     # Insert points in linesegments  > 4
     for chain1, chain2 in zip(P1Less4, PLess4):
         n = len(P1Less4[chain1])
@@ -299,77 +278,49 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
         Insert_points_P1[chain1] = np.zeros((n)).tolist()
         Insert_points_P[chain2] = np.zeros((m)).tolist()
         
-        # print("1: " + str(Long_lines1))
-        # print("2: " + str(Long_lines2))
         for i in reversed(Long_lines[0]):
-            #print(np.sqrt(np.sum((np.array(P1[chain1])[i,:]-np.array(P1[chain1])[i+1,:])**2)))
             P1Less4[chain1].insert(i+1, ((np.array(P1Less4[chain1])[i,:]+np.array(P1Less4[chain1])[i+1,:])/2).tolist())
             Insert_points_P1[chain1].insert(i+1, 1)
             RePar1Less4[chain1].insert(i+1, (RePar1Less4[chain1][i]+RePar1Less4[chain1][i+1])/2)
 
-            # print(max(np.sqrt(np.sum((P_tmp[i,:]-P_tmp[i+1,:])**2)),np.sqrt(np.sum((P1_tmp[i,:]-P1_tmp[i+1,:])**2))))
             PLess4[chain2].insert(i+1, ((np.array(PLess4[chain2])[i,:]+np.array(PLess4[chain2])[i+1,:])/2).tolist())
             Insert_points_P[chain2].insert(i+1, 1)
             ReParLess4[chain2].insert(i+1, (ReParLess4[chain2][i]+ReParLess4[chain2][i+1])/2)
 
-    print("Length of repar[Chain_A]: ", len(repar["Chain_A"]))
-    print("Length of repar1[Chain_A]: ", len(repar1["Chain_A"]))
+    #print("Length of repar[Chain_A]: ", len(repar["Chain_A"]))
+    #print("Length of repar1[Chain_A]: ", len(repar1["Chain_A"]))
 
 
 
     # Lav repar
     if makefigure == 1:
         # #Plot P1, P2 and P in 3d using plotly
-
         fig = go.Figure()
 
         for chain in P1.keys():
             fig.add_trace(go.Scatter3d(x=[i[0] for i in P1[chain]], y=[i[1] for i in P1[chain]], z=[i[2] for i in P1[chain]], mode='lines', line=dict(width=9, color = "blue"), name=chain))
-
-        # for chain in P2.keys():
-        #     fig.add_trace(go.Scatter3d(x=[i[0] for i in P2[chain]], y=[i[1] for i in P2[chain]], z=[i[2] for i in P2[chain]], mode='lines', line=dict(width=9), name=chain))
 
         for chain in P.keys():
             fig.add_trace(go.Scatter3d(x=[i[0] for i in P[chain]], y=[i[1] for i in P[chain]], z=[i[2] for i in P[chain]], mode='lines', line=dict(width=9,color = 'red'), name="Aligned "+chain))
 
         #add plot title
         fig.update_layout(title_text="Structural alignment of protein structures")
-        #fig.write_html("C:/Users/Kapta/Documents/Skole/DTU/6.semester/BP/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/CRUA.html")
         fig.show()
 
-        # pv1 = 270
-        # pv2 = 285
 
-        
-        #Create a plot for each pair of chains
-        # for i in range(len(P1.keys())):
-        #     fig = go.Figure()
-        #     fig.add_trace(go.Scatter3d(x=[i[0] for i in P1[chain_name1[i]]], 
-        #                                y=[i[1] for i in P1[chain_name1[i]]], 
-        #                                z=[i[2] for i in P1[chain_name1[i]]], mode='lines', line=dict(width=9), name='P'))
-            
-        #     fig.add_trace(go.Scatter3d(x=[i[0] for i in P[chain_name1[i]]], y=[i[1] for i in P[chain_name1[i]]], z=[i[2] for i in P[chain_name1[i]]], mode='lines', line=dict(width=9), name='P'))
-        #     fig.update_layout(title_text="Structural alignment of protein structures for chain " + chain_name1[i])
-        #     fig.show()
-
-    print("RMSD of structual alignment " + str(rmsd))
-    # print(best_perms)
+    # print("RMSD of structual alignment " + str(rmsd))
 
     is_aligned = {}
     NresAverage = {}
 
     for chain in repar:
         is_aligned[chain] = np.ones(len(repar1[chain]))
-        # NresAverage[chain] = (len(P1_org[chain])+len(P2_org[chain]))/2
         P1[chain] = np.array(P1[chain])
         P[chain] = np.array(P[chain])
 
     P1org_tot = np.concatenate(list(P1_org.values()), axis = 0)
     P2org_tot = np.concatenate(list(P2_org.values()), axis = 0)
-    # print(P2_org)
     NresAverage = (len(P1org_tot)+len(P2org_tot))/2
-
-
 
     return P1, P, repar1, repar, is_aligned, NresAverage, P1Less4, PLess4, RePar1Less4, ReParLess4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2
 
@@ -379,7 +330,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
 
 #pdb_file1 = "C:/Users/Kapta/Documents/Skole/DTU/6.semester/BP/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB//CRUA_hexamer_positive.pdb"
 #pdb_file2 = "C:/Users/Kapta/Documents/Skole/DTU/6.semester/BP/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRU1_hexamer_negative.pdb"
-
 
 #P1, P, repar1, repar, is_aligned, NresAverage = structural_alignment(pdb_file1, pdb_file2, makefigure = 1)
 
