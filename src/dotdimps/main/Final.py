@@ -16,8 +16,8 @@ if Adam == 1:
     pdb_file2 = "/Users/agb/Desktop/6. Semester/Bachelorprojekt/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRU1_hexamer_negative.pdb"
 
 else:
-    pdb_file1 = "src/dotdimps/Jonas Seje folders/PDB Files/CRUA_hexamer_positive.pdb"
-    pdb_file2 = "src/dotdimps/Jonas Seje folders/PDB Files/CRU1_hexamer_negative.pdb"
+    pdb_file1 = "src/dotdimps/main/PDB Files/CRUA_hexamer_positive.pdb"
+    pdb_file2 = "src/dotdimps/main/PDB Files/CRU1_hexamer_negative.pdb"
 
 
 
