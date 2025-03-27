@@ -49,7 +49,7 @@ def IsContractableType1ReparametrizationParallel(M, M0, M1, i, P, P1, maxlen, ch
     # Check if the distance between the first and last points is greater than a small threshold
     if np.sum((pts[:, 0] - pts[:, -1]) ** 2) > 10**(-15):
         pointdistance = np.sum((pts[:, 0] - pts[:, -1]) ** 2) ** 0.5
-        print('WARNINGNoIntersection distance', pointdistance)
+        print('WARNING: No intersection distance', pointdistance)
         return [0, 0]
 
     # Calculate the center of the points and adjust the points to be centered around the origin

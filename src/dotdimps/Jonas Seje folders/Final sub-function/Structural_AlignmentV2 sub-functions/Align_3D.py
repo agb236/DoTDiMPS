@@ -16,7 +16,6 @@ def Align_3D(P1, P2):
     n = P1.shape[0]
     meanp = mean(P2,axis=0)
     meanpt = mean(P1, axis = 0)
-    #print(meanp, meanpt)
 
     q= P2-meanp
     qt = P1-meanpt
@@ -31,28 +30,8 @@ def Align_3D(P1, P2):
 
     R = u@array([[1,0,0],[0,1,0],[0,0,d]])@(vh)
 
-    # t = 1/n*(P1.sum(axis = 0)-P2.sum(axis=0))
-    # print(t)
     transformed_pts = transpose(R@transpose(q))+meanp
 
     RMSD = sqrt(1/n * linalg.norm(qt-transformed_pts,"fro")**2) #frobenius norm
-    # RMSD = sqrt(sum((P1 - transformed_pts)**2) / n)
 
     return transformed_pts, R, RMSD
-
-
-# #generate test data
-# P1 = array([[0,0,0],[1,0,0],[0,1,0],[0,0,1]])
-# P2 = array([[0,0,0],[1,0,0],[0,1,0],[0,0,1]]) + 0.1
-
-
-# transformed_pts, RMSD = Align_3D(P1, P2)
-
-# #plot the data, using plotly
-# import plotly.graph_objects as go
-
-# fig = go.Figure()
-
-# fig.add_trace(go.Scatter3d(x=P1[:,0], y=P1[:,1], z=P1[:,2], mode='markers', marker=dict(size=12, color='blue')))
-# fig.add_trace(go.Scatter3d(x=transformed_pts[:,0], y=transformed_pts[:,1], z=transformed_pts[:,2], mode='markers', marker=dict(size=12, color='green')))
-# fig.show()

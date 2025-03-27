@@ -29,7 +29,7 @@ def IsContractableType2ReparametrizationParallel(M, M0, M1, i, makker, P, P1, ma
         return ud
 
     # Print debug information if printout is enabled
-    if printout:
+    if printout == 1:
         print([i, makker])
         print(M[[i, makker], :])
 
