@@ -86,7 +86,7 @@ def MakeSelfIntcFigureV3(P, P1, selfintc, overlap, ud_essensials, RePar1, RePar2
     chain_namesX = []
     chain_namesY = []
     for i in range(len(chain_change)-1):
-        chain_namesX.append('Chain' + str(i+1))
+        chain_namesX.append()
         chain_namesY.append('Chain' + chr(65 + i))
     # Add second axis to show the chain change residues
     ax2 = plt.twiny()
@@ -353,7 +353,7 @@ def MakeSelfIntcFigureV3(P, P1, selfintc, overlap, ud_essensials, RePar1, RePar2
                 ),
             )
             # Show plot
-            fig.write_html("C:/Users/Kapta/Documents/Skole/DTU/6.semester/BP/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/Essential.html")
+            # fig.write_html("C:/Users/Kapta/Documents/Skole/DTU/6.semester/BP/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/Essential.html")
             fig.show()
             print("")
 
