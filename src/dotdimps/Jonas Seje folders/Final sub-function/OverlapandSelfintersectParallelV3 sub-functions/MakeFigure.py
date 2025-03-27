@@ -86,7 +86,7 @@ def MakeSelfIntcFigureV3(P, P1, selfintc, overlap, ud_essensials, RePar1, RePar2
     chain_namesX = []
     chain_namesY = []
     for i in range(len(chain_change)-1):
-        chain_namesX.append()
+        chain_namesX.append('Chain' + i)
         chain_namesY.append('Chain' + chr(65 + i))
     # Add second axis to show the chain change residues
     ax2 = plt.twiny()
