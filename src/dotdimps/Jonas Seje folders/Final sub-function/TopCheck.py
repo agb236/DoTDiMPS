@@ -3,8 +3,6 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "OverlapandSelfintersectParallelV3 sub-functions"))
 
 import numpy as np
-import time
-import timeit
 import copy
 from NEAM import NEAMReparametrizationParallel
 from ScoreSelfint import ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP
@@ -14,7 +12,6 @@ from MakeFigure import MakeSelfIntcFigureV3
 
 
 def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4, IsAligned, P1org, P2org, NresAverage, options, False_lines, P1, P2, RePar1, RePar2, IsAligned_org, Insert_points_P1, Insert_points_P, b_factors1, b_factors2):
-    start = timeit.timeit() 
     Smoothning = options['Smoothning']
     AllowEndContractions = options['AllowEndContractions']
     AllMaxLengths = options['MaxLength']
@@ -32,7 +29,7 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
     sumselfintc = np.zeros(len(bands))
     sumoverlap = np.zeros(len(bands))
 
-    dPsq = (P1Less4 - P2Less4) ** 2  # working zone
+    dPsq = (P1Less4 - P2Less4) ** 2
 
     Dsqr = np.sum(dPsq, axis=1)
     Ds = np.sqrt(Dsqr)
@@ -45,20 +42,9 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
 
     rms1Aligned = np.sum(Ds[IsAligned == 1])
     rms2Aligned = np.sqrt(np.sum(Dsqr[IsAligned == 1]) / np.sum(IsAligned))
-    end = timeit.timeit()
-    print("Time3:", end - start)
-    t = time.time()
     overlap, _, _, _ = NEAMReparametrizationParallel(P1Less4, P2Less4, RePar1Less4, RePar2Less4, IsAligned, Smoothning)
-    elapsed = time.time() - t
-    print("This is the time NEAM takes:", elapsed)
-    start = timeit.timeit() 
     L1 = np.sqrt(np.sum((P1Less4[0:n - 1, :] - P1Less4[1:n, :]) ** 2, axis=1))
     L2 = np.sqrt(np.sum((P2Less4[0:n - 1, :] - P2Less4[1:n, :]) ** 2, axis=1))
-    # histogram of L1 and L2
-    #import matplotlib.pyplot as plt
-    #plt.hist(L1, bins=300)
-    #plt.hist(L2, bins=300)
-    #plt.show()
 
     if Smoothning == 1:
         MaxL = 3.5
@@ -88,7 +74,6 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
     Oav = np.sum(tmp, axis=2)
 
     a2, a1 = np.where(np.transpose(np.tril(Oav, -2) > MaxSum) + (np.tril(M, -2) > MaxL))
-    #a2, a1 = np.where(np.transpose((np.tril(M, -2) > MaxL)))
 
     tjekliste = np.column_stack((a1, a2))
     
@@ -106,8 +91,8 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
     tjekliste = tjekliste[mask]
 
     PotSelfIntc = tjekliste.shape[0]
-    print("Number to check: ", PotSelfIntc)
-    print("Remove because false lines ", tmp_num_check - PotSelfIntc)
+    #print("Number to check: ", PotSelfIntc)
+    #print("Remove because false lines ", tmp_num_check - PotSelfIntc)
 
     Insert_points_P_tot = np.concatenate(list(Insert_points_P.values()), axis = 0)
     Insert_cumsum = np.cumsum(Insert_points_P_tot)
@@ -119,20 +104,16 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
 
     selfintcI =[]
     selfintcJ =[]
-    end = timeit.timeit()
-    print("Time between NEAM and SelfIntersection:", end - start)
-    start = timeit.timeit() 
+    Removed_adjacent = 0
     for k in range(tjekliste.shape[0]):
         i = int(tjekliste[k, 0] - IPP0_tjek[k])
         j = int(tjekliste[k, 1] - IPP1_tjek[k])
-        # print(i,j)
         if (j == i+1) or (j == i-1):
-            print("Removed because of adjacent chains")
+            Removed_adjacent += 1 #print("Removed because of adjacent chains")
         else:
             UdSelf = SelfintersectionTransversal(P1_tot[i:(i+2), :].T, P2_tot[i:(i+2), :].T, P1_tot[j:(j+2), :].T, P2_tot[j:(j+2), :].T)
             UdSelf = np.atleast_2d(UdSelf)
             selfintc[i, j] = UdSelf[0, 0]
-            #print(f"{k/(PotSelfIntc-1)*100:.2f}%")
             if UdSelf[0, 0] ** 2 == 1:
                 selfintcu[i, j] = UdSelf[0, 1]
                 selfintcv[i, j] = UdSelf[0, 2]
@@ -140,10 +121,6 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
                 selfintcI = np.append(selfintcI, i)
                 selfintcJ = np.append(selfintcJ, j)
     print(len(np.where(selfintc)[0]))
-    end = timeit.timeit()
-    print("Time Selfintersection:", end - start)
-    # plot 10 random lines that should intersect -----------------------------------
-    start = timeit.timeit() 
     
     for j in range(len(bands)):
         sumoverlap[j] = np.sum(np.tril(overlap, -bands[j]))
@@ -176,13 +153,11 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
         non_selfintersect[chain] = []
         for i, k in enumerate(reversed(range(intersect_index_i.shape[0]))):
             if intersect_index_i[k] > c and intersect_index_j[k] > c:
-                #selfintersect[chain][i] = ([intersect_index_i[k], intersect_index_j[k]]) # If you want to know indices
                 selfintersect[chain].append(([intersect_index_i[k], intersect_index_j[k]]))
                 intersect_index_i = np.delete(intersect_index_i, k)
                 intersect_index_j = np.delete(intersect_index_j, k)
                 continue
             if (intersect_index_i[k] < c) ^ (intersect_index_j[k] < c):
-                #non_selfintersect[chain][i] = ([intersect_index_i[k], intersect_index_j[k]])
                 non_selfintersect[chain].append(([intersect_index_i[k], intersect_index_j[k]]))
                 intersect_index_i = np.delete(intersect_index_i, k)
                 intersect_index_j = np.delete(intersect_index_j, k)
@@ -190,14 +165,10 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
     selfintersect_tot = []
     non_selfintersect_tot = []
     
-    
-    
-    
     for i in list(selfintersect.keys()):
         selfintersect_tot.extend(selfintersect[i])
         non_selfintersect_tot.extend(non_selfintersect[i])
-    
-    t = time.time()
+
     # Assuming selfintc and selfintersect[chain] are defined
     # Reset all elements in selfintc to 0
     for i in range(np.array([Maxs]).shape[0]):
@@ -221,7 +192,7 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
                 new_selfintcv[starti:sluti, startj:slutj] = selfintcv[starti:sluti, startj:slutj]
                 new_selfintcs[starti:sluti, startj:slutj] = selfintcs[starti:sluti, startj:slutj]
                 if np.where(new_selfintc)[0].shape[0] != 0:
-                    print(i,j)
+                    #print(i,j)
                     tmp, Essensials, Mselfintc = ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP(new_selfintc, new_selfintcu, new_selfintcv, new_selfintcs, n, P1_tot, P2_tot, RePar1, RePar2, IsAligned, i, j, maxendcontraction, Maxs, chain_change[1:])
                     if len(Essensials) != 0:
                         Udessentials = np.vstack((Udessentials, Essensials))
@@ -231,9 +202,7 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
                     Outs.append(tmp)
     Intersecting_chain_number_i = Intersecting_chain_number_i[1:]
     Intersecting_chain_number_j = Intersecting_chain_number_j[1:]
-    elapsed = time.time() - t
     
-    print("This is the time it takes:", elapsed)
     """"
     for i in range(Maxs):
         if AllowEndContractions == 1:
@@ -245,12 +214,10 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
         Outs.append(tmp)
     """
     Udessentials = Udessentials[1:,:]
-    print("Number of essential self-intersections: ", Udessentials.shape[0])
+    #print("Number of essential self-intersections: ", Udessentials.shape[0])
     if makefigure == 1:
         MakeSelfIntcFigureV3(P1_tot, P2_tot, selfintc, overlap, Udessentials, RePar1, RePar2, options, chain_change2, Intersecting_chain_number_i, Intersecting_chain_number_j, b_factors1, b_factors2)
-    end = timeit.timeit()
-    print("Time Other intersections:", end - start)
-    print("Number of essential self-intersections: ", Udessentials.shape[0])
+    #print("Number of essential self-intersections: ", Udessentials.shape[0])
     ud = [Outs, rms1, rms1Aligned, rms2, rms2Aligned, GDT_TS, TM, sumoverlap, PotSelfIntc, sumselfintc, AlignmentMetaDataOut]
     ud = [Udessentials, len(np.where(selfintc)[0])]
     return ud
