@@ -92,4 +92,6 @@ for i,chain in zip(range(len(P1Less4)), P1Less4.keys()):
     start = False_lines[i]
 
 False_lines = False_lines[:-1]
-OverlapandSelfintersectParallelV3(P1Less4_tot, P2Less4_tot, RePar1Less4_tot, RePar2Less4_tot, IsAlignedLess4_tot, P1org, P2org, NresAverage, options, False_lines, P1, P2, RePar1_tot, RePar2_tot, IsAligned,Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2)
+ud = OverlapandSelfintersectParallelV3(P1Less4_tot, P2Less4_tot, RePar1Less4_tot, RePar2Less4_tot, IsAlignedLess4_tot, P1org, P2org, NresAverage, options, False_lines, P1, P2, RePar1_tot, RePar2_tot, IsAligned,Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2)
+
+print("Table of intersections between chains: ", ud[2])
