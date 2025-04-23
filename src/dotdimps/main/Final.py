@@ -5,7 +5,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "Final sub-function"))
 
 import numpy as np
 from StructuralAlignmentV2 import structural_alignment
-from TopCheck import OverlapandSelfintersectParallelV3
+from TopCheckV2 import OverlapandSelfintersectParallelV3
 sys.path.append(os.path.join(os.path.dirname(__file__), "Final sub-function/Structural_AlignmentV2 sub-functions"))
 from PDBP_to_seq import one_PDB_to_seq
 
@@ -19,16 +19,18 @@ else:
     pdb_file1 = "src/dotdimps/main/PDB Files/CRUA_hexamer_positive.pdb"
     pdb_file2 = "src/dotdimps/main/PDB Files/CRU1_hexamer_negative.pdb"
 
+    # pdb_file1 = "src/dotdimps/main/PDB Files/fold_t1104dimer_model_0.pdb"
+    # pdb_file2 = "src/dotdimps/main/PDB Files/fold_t1104dimer_model_1.pdb"
+    
 
 
-P1, P2, RePar1, RePar2, IsAligned, NresAverage, P1Less4, P2Less4, RePar1Less4, RePar2Less4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2 =  structural_alignment(pdb_file1, pdb_file2, makefigure = 1)
 # options = {'Smoothning': 0, 'AllowEndContractions': 0, 'MaxLength': 5, 'MakeFigures': 1}
 options = {
     'MaxLength': 50,
     'dmax': 10,
     'Smoothning': 0,
     'AllowEndContractions': 0,
-    'MakeFigures': 1,
+    'MakeFigures': 0,
     'MakeAlignmentSeedFigure': 0,
     'MakeFiguresInLastItteration': 1,
     'MakeLocalPlotsOfEssensials': 1,
@@ -54,6 +56,9 @@ options = {
     'SequenceAlignmentExtension': 1,
     'InitialAlignmentExactPairs': 1
 }
+
+P1, P2, RePar1, RePar2, IsAligned, NresAverage, P1Less4, P2Less4, RePar1Less4, RePar2Less4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2 =  structural_alignment(pdb_file1, pdb_file2, makefigure = options['MakeFigures'])
+
 P1org = 0
 P2org = 0
 
@@ -94,4 +99,11 @@ for i,chain in zip(range(len(P1Less4)), P1Less4.keys()):
 False_lines = False_lines[:-1]
 ud = OverlapandSelfintersectParallelV3(P1Less4_tot, P2Less4_tot, RePar1Less4_tot, RePar2Less4_tot, IsAlignedLess4_tot, P1org, P2org, NresAverage, options, False_lines, P1, P2, RePar1_tot, RePar2_tot, IsAligned,Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2)
 
-print("Table of intersections between chains: ", ud[2])
+print("Table of intersections between chains:\n")
+Table_with_axis = ud[2]
+Table_with_axis = np.vstack((chain_name1, Table_with_axis))
+chain_name2.insert(0, "//")
+Table_with_axis = np.hstack((Table_with_axis, np.array(chain_name2).reshape(-1, 1)))
+
+
+print(Table_with_axis)
