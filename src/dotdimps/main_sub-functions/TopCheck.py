@@ -173,7 +173,7 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
     # Reset all elements in selfintc to 0
     for i in range(np.array([Maxs]).shape[0]):
         if AllowEndContractions == 1:
-            maxendcontraction = Maxs[i] / 2
+            maxendcontraction = np.array([Maxs])[i] / 2
         else:
             maxendcontraction = 0
         
