@@ -191,6 +191,7 @@ def OverlapandSelfintersectParallelV3(P1Less4, P2Less4, RePar1Less4, RePar2Less4
                 new_selfintcu[starti:sluti, startj:slutj] = selfintcu[starti:sluti, startj:slutj]
                 new_selfintcv[starti:sluti, startj:slutj] = selfintcv[starti:sluti, startj:slutj]
                 new_selfintcs[starti:sluti, startj:slutj] = selfintcs[starti:sluti, startj:slutj]
+                # Make two lengths (n) for the two chains and use instead of n in score function.
                 if np.where(new_selfintc)[0].shape[0] != 0:
                     #print(i,j)
                     tmp, Essensials, Mselfintc = ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP(new_selfintc, new_selfintcu, new_selfintcv, new_selfintcs, n, P1_tot, P2_tot, RePar1, RePar2, IsAligned, i, j, maxendcontraction, Maxs, chain_change[1:])

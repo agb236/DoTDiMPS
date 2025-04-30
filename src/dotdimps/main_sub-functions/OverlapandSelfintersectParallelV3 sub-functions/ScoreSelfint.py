@@ -114,13 +114,15 @@ def ScoreSelfIntcWeightedMatchingReparametrizisedParallelTMP(selfintc, selfintcu
     
     O1 = np.zeros((NbrSelfIntc, 2))
     
+    #Modify the following to work for diffrent chains, where if chain1 != chain2, the type 1 moves are not performed, but end contraction is  still performed.
+
     if chain1 == chain2:
         for j in range(NbrSelfIntc): # +1
             tmp = IsContractableType1ReparametrizationParallel(M, M0, M1, j, P, P1, maxlen, chain_change)
             if tmp[0]:
                 tmp[0] = np.min([tmp[0], PriceEstEndContraction(M[j,4]-1), PriceEstEndContraction(len-M[j,3]-1)])
             else:
-                enddist = np.min([M[j,4]-1, len-M[j,3]])
+                enddist = np.min([M[j,4]-1, len-M[j,3]]) # Add lengths to both ends of each point
                 if enddist < maxendcontraction:
                     tmp = [PriceEstEndContraction(enddist), enddist*2]
             O1[j,:] = tmp
