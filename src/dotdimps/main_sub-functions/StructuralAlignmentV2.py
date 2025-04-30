@@ -200,6 +200,8 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
 
     Transformed_points, R, rmsd = Align_3D(aligment_points1, aligment_points2)
 
+    print("rmsd:",rmsd)
+    
     P = {}
     start = 0
     for chain1, chain2 in zip(P1, P2_Reorder):

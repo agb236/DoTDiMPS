@@ -61,6 +61,7 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     chain_name1 = list(seq1.keys())
     chain_name2 = list(seq2_Reorder.keys())
 
+    
     # Start alignment
     aligner = Align.PairwiseAligner()
 
@@ -104,7 +105,8 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
         # Replacing the list of lists with the NumPy array
         P1[chain] = P1_array
         P2_Reorder[chain] = P2_array
-
+    
+    
     mean1 = np.mean(np.concatenate(list(P1.values()),axis=0),axis=0)
     mean2 = np.mean(np.concatenate(list(P2_Reorder.values()),axis=0),axis=0)
     
@@ -126,7 +128,7 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     aligment_points2 = aligment_points2[1:,:]
 
     Transformed_points, R, rmsd = Align_3D(aligment_points1, aligment_points2)
-
+    
     P = {}
     start = 0
     for chain1, chain2 in zip(P1, P2_Reorder):
@@ -145,7 +147,7 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     for chain in P1:
         P1[chain] = P1[chain].tolist()
         P[chain] = P[chain].tolist()
-
+    
     repar = {}
     repar1 = {}
 
@@ -227,8 +229,8 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
         for chain in P1.keys():
             fig.add_trace(go.Scatter3d(x=[i[0] for i in P1[chain]], y=[i[1] for i in P1[chain]], z=[i[2] for i in P1[chain]], mode='lines', line=dict(width=9, color = "blue"), name=chain))
 
-        for chain in P.keys():
-            fig.add_trace(go.Scatter3d(x=[i[0] for i in P[chain]], y=[i[1] for i in P[chain]], z=[i[2] for i in P[chain]], mode='lines', line=dict(width=9,color = 'red'), name="Aligned "+chain))
+        for chain in P2.keys():
+            fig.add_trace(go.Scatter3d(x=[i[0] for i in P2[chain]], y=[i[1] for i in P2[chain]], z=[i[2] for i in P2[chain]], mode='lines', line=dict(width=9,color = 'red'), name="Aligned "+chain))
 
         #add plot title
         fig.update_layout(title_text="Structural alignment of protein structures")

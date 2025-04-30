@@ -1,6 +1,6 @@
 #!/usr/bin/env pymol
 cmd.load("aligned_output.pdb", "structure1")
-cmd.load("/Users/agb/Desktop/DoTDiMPS/data/raw/H1208.pdb", "structure2")
+cmd.load("/Users/agb/Desktop/DoTDiMPS/data/raw/CRUA_hexamer_positive.pdb", "structure2")
 hide all
 set all_states, off
 show ribbon, structure1 and c. A
