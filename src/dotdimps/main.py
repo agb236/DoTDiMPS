@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions/Stru
 from PDBP_to_seq import one_PDB_to_seq
 
 # Get the absolute path to the project root
-current = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..",".."))
+current = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # Construct the path to the raw data folder
 data_path = os.path.join(current, "data", "raw")
