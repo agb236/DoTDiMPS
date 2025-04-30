@@ -2,7 +2,7 @@ import sys
 import os
 import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions"))
-from StructuralAlignmentV2 import structural_alignment
+from StructuralAlignmentV2USalign import structural_alignment
 from TopCheckV2 import OverlapandSelfintersectParallelV3
 sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions/Structural_AlignmentV2 sub-functions"))
 from PDBP_to_seq import one_PDB_to_seq
@@ -12,12 +12,17 @@ current = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # Construct the path to the raw data folder
 data_path = os.path.join(current, "data", "raw")
+data_path2 = os.path.join(current,"data", "USalign_output_folder")
 
+pdb_file1 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
+pdb_file2 = os.path.join(data_path2, "aligned_output.pdb")
+#pdb_file1 = os.path.join(data_path, "H1208TS008_1.pdb")
+#pdb_file2 = os.path.join(data_path2, "aligned_output.pdb")
 # pdb_file1 = os.path.join(data_path, "CRUA_hexamer_positive.pdb")
 # pdb_file2 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
 
-pdb_file1 = os.path.join(data_path, "fold_t1104dimer_model_0.pdb")
-pdb_file2 = os.path.join(data_path, "fold_t1104dimer_model_1.pdb")
+#pdb_file1 = os.path.join(data_path, "fold_t1104dimer_model_0.pdb")
+#pdb_file2 = os.path.join(data_path, "fold_t1104dimer_model_1.pdb")
 
 
 # options = {'Smoothning': 0, 'AllowEndContractions': 0, 'MaxLength': 5, 'MakeFigures': 1}
@@ -26,7 +31,7 @@ options = {
     'dmax': 10,
     'Smoothning': 0,
     'AllowEndContractions': 1,
-    'MakeFigures': 0,
+    'MakeFigures': 1,
     'MakeAlignmentSeedFigure': 0,
     'MakeFiguresInLastItteration': 1,
     'MakeLocalPlotsOfEssensials': 1,

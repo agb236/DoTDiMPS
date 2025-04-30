@@ -19,24 +19,6 @@ import copy
 
 def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     
-    def find_missing_numbers(arr, n):
-        # Calculate the sum of integers from 1 to n
-        total_sum = n * (n + 1) // 2
-        
-        # Calculate the sum of elements in the array
-        arr_sum = sum(arr)
-        
-        # Calculate the difference to find the sum of missing numbers
-        # missing_sum = total_sum - arr_sum
-        
-        # Find the missing numbers
-        missing_numbers = []
-        for i in range(1, n + 1):
-            if i not in arr:
-                missing_numbers.append(i)
-        
-        return missing_numbers
-    
     def find_increasing_subarrays(arr):
         # Initialize the current length and the result list
         current_length = 1
@@ -59,25 +41,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
         result2.extend([current_length]*current_length)
 
         return result, result2
-    
-    # Function to calculate distance matrix for a permutation
-    def distance_matrix_for_permutation(perm):
-        best_perm = None
-        min_RMSD = np.inf
-        best_perms = []
-        for letter in perm:
-            com_array2 = np.zeros((len(chain_com2), 3))
-            i = 0
-            for chain in letter:
-                for j in range(len(chain_com2[chain])):
-                    com_array2[i,j] = chain_com2[chain][j]
-                i+=1
-            transformed_pts, R, RMSD = Align_3D(np.array(com_array2), np.array(com_array))
-            if min_RMSD >= RMSD:
-                min_RMSD = RMSD
-                best_perms.append(letter)
-        best_perm = best_perms[-1]
-        return best_perm, best_perms
 
     P1, P2, seq1, seq2, ref_structure, sample_structure, tot_seq1, tot_seq2, chain_com1, chain_com2, b_factors1, b_factors2 = two_PDB_to_seq(pdb_file1, pdb_file2)
     
@@ -91,49 +54,14 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     if len(chain_name1) != len(chain_name2):
         raise ValueError("The number of chains in the two structures is not equal")
     
-    distance_matrix1 = np.zeros((len(chain_name1), len(chain_name1)))
-    distance_matrix2 = np.zeros((len(chain_name2), len(chain_name2)))
-    nr_chains = len(chain_name1)
-
-    for i in range(nr_chains):
-        for j in range(nr_chains):
-            if chain_name1[i] == chain_name1[j]:
-                distance_matrix1[i, j] = 0
-            else:
-                distance_matrix1[i, j] = np.linalg.norm(np.array(chain_com1[chain_name1[i]]) - np.array(chain_com1[chain_name1[j]]))
-                distance_matrix1[j, i] = distance_matrix1[i, j]
-            if chain_name2[i] == chain_name2[j]:
-                distance_matrix2[i, j] = 0
-            else:
-                distance_matrix2[i, j] = np.linalg.norm(np.array(chain_com2[chain_name2[i]]) - np.array(chain_com2[chain_name2[j]]))
-                distance_matrix2[j, i] = distance_matrix2[i, j]
-
-    permutations = list(itertools.permutations(chain_name2))
-
-
-    i = 0
-    com_array = np.zeros((len(chain_com1), 3))
-
-    for chain in chain_com1.keys():
-        # Populating the array with values from lists
-        for j in range(len(chain_com1[chain])):
-            com_array[i,j] = chain_com1[chain][j]
-        i += 1
-
-    best_perm, best_perms = distance_matrix_for_permutation(permutations)
-
-    Best_chain_pairs = [best_perm] #[('Chain_A', 'Chain_B', 'Chain_C', 'Chain_D')]
-
-    #Index for best chain pair
-    Best_chain_index = 0
-
     #Reorder chains in P2 and seq2
-    P2_Reorder = {Best_chain_pairs[Best_chain_index][i]: P2[Best_chain_pairs[0][i]] for i in range(len(P2))}
-    seq2_Reorder = {Best_chain_pairs[Best_chain_index][i]: seq2[Best_chain_pairs[0][i]] for i in range(len(seq2))}
+    P2_Reorder = P2
+    seq2_Reorder = seq2
 
     chain_name1 = list(seq1.keys())
     chain_name2 = list(seq2_Reorder.keys())
 
+    
     # Start alignment
     aligner = Align.PairwiseAligner()
 
@@ -177,7 +105,8 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
         # Replacing the list of lists with the NumPy array
         P1[chain] = P1_array
         P2_Reorder[chain] = P2_array
-
+    
+    
     mean1 = np.mean(np.concatenate(list(P1.values()),axis=0),axis=0)
     mean2 = np.mean(np.concatenate(list(P2_Reorder.values()),axis=0),axis=0)
     
@@ -199,8 +128,6 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     aligment_points2 = aligment_points2[1:,:]
 
     Transformed_points, R, rmsd = Align_3D(aligment_points1, aligment_points2)
-
-    print("rmsd:",rmsd)
     
     P = {}
     start = 0
@@ -220,7 +147,7 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
     for chain in P1:
         P1[chain] = P1[chain].tolist()
         P[chain] = P[chain].tolist()
-
+    
     repar = {}
     repar1 = {}
 
@@ -302,8 +229,8 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
         for chain in P1.keys():
             fig.add_trace(go.Scatter3d(x=[i[0] for i in P1[chain]], y=[i[1] for i in P1[chain]], z=[i[2] for i in P1[chain]], mode='lines', line=dict(width=9, color = "blue"), name=chain))
 
-        for chain in P.keys():
-            fig.add_trace(go.Scatter3d(x=[i[0] for i in P[chain]], y=[i[1] for i in P[chain]], z=[i[2] for i in P[chain]], mode='lines', line=dict(width=9,color = 'red'), name="Aligned "+chain))
+        for chain in P2.keys():
+            fig.add_trace(go.Scatter3d(x=[i[0] for i in P2[chain]], y=[i[1] for i in P2[chain]], z=[i[2] for i in P2[chain]], mode='lines', line=dict(width=9,color = 'red'), name="Aligned "+chain))
 
         #add plot title
         fig.update_layout(title_text="Structural alignment of protein structures")
@@ -333,5 +260,4 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
 #pdb_file1 = "C:/Users/Kapta/Documents/Skole/DTU/6.semester/BP/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB//CRUA_hexamer_positive.pdb"
 #pdb_file2 = "C:/Users/Kapta/Documents/Skole/DTU/6.semester/BP/Detection-of-topological-changes-in-multimer-protein-structures/Multimer/examples/Multimer PDB/CRU1_hexamer_negative.pdb"
 
-#P1, P, repar1, repar, is_aligned, NresAverage, P1Less4, PLess4, RePar1Less4, ReParLess4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2 = structural_alignment(pdb_file1, pdb_file2, makefigure = 1)
-
+#results = structural_alignment(pdb_file1, pdb_file2, makefigure=1)
