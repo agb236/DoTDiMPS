@@ -2,7 +2,7 @@ import sys
 import os
 import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions"))
-from StructuralAlignmentV2USalign import structural_alignment
+from StructuralAlignmentV2 import structural_alignment
 from TopCheckV2 import OverlapandSelfintersectParallelV3
 sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions/Structural_AlignmentV2 sub-functions"))
 from PDBP_to_seq import one_PDB_to_seq
@@ -14,24 +14,23 @@ current = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 data_path = os.path.join(current, "data", "raw")
 data_path2 = os.path.join(current,"data", "USalign_output_folder")
 
-pdb_file1 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
-pdb_file2 = os.path.join(data_path2, "aligned_output.pdb")
-#pdb_file1 = os.path.join(data_path, "H1208TS008_1.pdb")
-#pdb_file2 = os.path.join(data_path2, "aligned_output.pdb")
+# pdb_file1 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
+# pdb_file2 = os.path.join(data_path2, "aligned_output.pdb")
+# pdb_file1 = os.path.join(data_path, "H1208TS008_1.pdb")
+# pdb_file2 = os.path.join(data_path2, "aligned_output.pdb")
 # pdb_file1 = os.path.join(data_path, "CRUA_hexamer_positive.pdb")
 # pdb_file2 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
 
-#pdb_file1 = os.path.join(data_path, "fold_t1104dimer_model_0.pdb")
-#pdb_file2 = os.path.join(data_path, "fold_t1104dimer_model_1.pdb")
-
+pdb_file1 = os.path.join(data_path, "fold_t1104dimer_model_0.pdb")
+pdb_file2 = os.path.join(data_path, "fold_t1104dimer_model_1.pdb")
 
 # options = {'Smoothning': 0, 'AllowEndContractions': 0, 'MaxLength': 5, 'MakeFigures': 1}
 options = {
-    'MaxLength': 10,
+    'MaxLength': 105,
     'dmax': 10,
     'Smoothning': 0,
     'AllowEndContractions': 1,
-    'MakeFigures': 1,
+    'MakeFigures': 0,
     'MakeAlignmentSeedFigure': 0,
     'MakeFiguresInLastItteration': 1,
     'MakeLocalPlotsOfEssensials': 1,
@@ -68,6 +67,9 @@ P2_tot = np.concatenate(list(P2.values()), axis = 0)
 P1Less4_tot = np.concatenate(list(P1Less4.values()), axis = 0)
 P2Less4_tot = np.concatenate(list(P2Less4.values()), axis = 0)
 
+# Save P1_tot and P2_tot to text files
+np.savetxt(os.path.join(current, "P1_tot.txt"), P1_tot, fmt="%.6f", header="P1_tot coordinates (x, y, z)", comments="")
+np.savetxt(os.path.join(current, "P2_tot.txt"), P2_tot, fmt="%.6f", header="P2_tot coordinates (x, y, z)", comments="")
 
 index1 = 0
 index2 = 0
@@ -98,6 +100,10 @@ for i,chain in zip(range(len(P1Less4)), P1Less4.keys()):
     start = False_lines[i]
 
 False_lines = False_lines[:-1]
+
+# Save False_lines to a text file
+np.savetxt(os.path.join(current, "False_lines.txt"), False_lines, fmt="%.6f", header="False_lines values", comments="")
+
 ud = OverlapandSelfintersectParallelV3(P1Less4_tot, P2Less4_tot, RePar1Less4_tot, RePar2Less4_tot, IsAlignedLess4_tot, P1org, P2org, NresAverage, options, False_lines, P1, P2, RePar1_tot, RePar2_tot, IsAligned,Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2)
 
 print("Table of intersections between chains:\n")
