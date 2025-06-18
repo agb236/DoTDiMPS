@@ -335,3 +335,17 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
 
 #P1, P, repar1, repar, is_aligned, NresAverage, P1Less4, PLess4, RePar1Less4, ReParLess4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2 = structural_alignment(pdb_file1, pdb_file2, makefigure = 1)
 
+def structural_alignment_with_retry(pdb_file1, pdb_file2, makefigure=1):
+    try:
+        return structural_alignment(pdb_file1, pdb_file2, makefigure=makefigure)
+    except Exception as e:
+        print(f"Alignment failed with order: {pdb_file1}, {pdb_file2}")
+        print(f"Error: {e}")
+        print("Retrying with swapped PDB files...")
+
+        try:
+            return structural_alignment(pdb_file2, pdb_file1, makefigure=makefigure)
+        except Exception as e2:
+            print(f"Retry also failed. Error: {e2}")
+            return None
+

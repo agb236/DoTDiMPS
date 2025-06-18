@@ -2,7 +2,7 @@ import sys
 import os
 import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions"))
-from StructuralAlignmentV2 import structural_alignment
+from StructuralAlignmentV2 import structural_alignment_with_retry #structural_alignment
 from TopCheckV2 import OverlapandSelfintersectParallelV3
 sys.path.append(os.path.join(os.path.dirname(__file__), "main_sub-functions/Structural_AlignmentV2 sub-functions"))
 from PDBP_to_seq import one_PDB_to_seq
@@ -18,11 +18,11 @@ data_path2 = os.path.join(current,"data", "USalign_output_folder")
 # pdb_file2 = os.path.join(data_path2, "aligned_output.pdb")
 # pdb_file1 = os.path.join(data_path, "H1208TS008_1.pdb")
 # pdb_file2 = os.path.join(data_path2, "aligned_output.pdb")
-# pdb_file1 = os.path.join(data_path, "CRUA_hexamer_positive.pdb")
-# pdb_file2 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
+pdb_file2 = os.path.join(data_path, "CRUA_hexamer_positive.pdb")
+pdb_file1 = os.path.join(data_path, "CRU1_hexamer_negative.pdb")
 
-pdb_file1 = os.path.join(data_path, "fold_t1104dimer_model_0.pdb")
-pdb_file2 = os.path.join(data_path, "fold_t1104dimer_model_1.pdb")
+#pdb_file1 = os.path.join(data_path, "fold_t1104dimer_model_0.pdb")
+#pdb_file2 = os.path.join(data_path, "fold_t1104dimer_model_1.pdb")
 
 # options = {'Smoothning': 0, 'AllowEndContractions': 0, 'MaxLength': 5, 'MakeFigures': 1}
 options = {
@@ -57,7 +57,7 @@ options = {
     'InitialAlignmentExactPairs': 1
 }
 
-P1, P2, RePar1, RePar2, IsAligned, NresAverage, P1Less4, P2Less4, RePar1Less4, RePar2Less4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2 =  structural_alignment(pdb_file1, pdb_file2, makefigure = options['MakeFigures'])
+P1, P2, RePar1, RePar2, IsAligned, NresAverage, P1Less4, P2Less4, RePar1Less4, RePar2Less4, Insert_points_P1, Insert_points_P, b_factors1, b_factors2, chain_name1, chain_name2 =  structural_alignment_with_retry(pdb_file1, pdb_file2, makefigure = options['MakeFigures'])
 
 P1org = 0
 P2org = 0
