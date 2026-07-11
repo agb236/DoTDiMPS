@@ -80,8 +80,8 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
             atoms_to_be_aligned1[chain1].extend(range((align[chain1].aligned[0][i][0]),(align[chain1].aligned[0][i][1])))
             atoms_to_be_aligned2[chain2].extend(range((align[chain1].aligned[1][i][0]),(align[chain1].aligned[1][i][1])))
 
-        atoms_to_be_aligned1[chain1].extend(range((align[chain1].aligned[0][Num_holes-1][0]),(align[chain1].aligned[0][Num_holes-1][1])+1))
-        atoms_to_be_aligned2[chain2].extend(range((align[chain1].aligned[1][Num_holes-1][0]),(align[chain1].aligned[1][Num_holes-1][1])+1))
+        atoms_to_be_aligned1[chain1].extend(range((align[chain1].aligned[0][Num_holes-1][0]),(align[chain1].aligned[0][Num_holes-1][1])))
+        atoms_to_be_aligned2[chain2].extend(range((align[chain1].aligned[1][Num_holes-1][0]),(align[chain1].aligned[1][Num_holes-1][1])))
 
     for chain in P1:
         P1[chain] = P1[chain].tolist()
@@ -115,34 +115,23 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
         P1[chain] = P1[chain] - mean1
         P2_Reorder[chain] = P2_Reorder[chain] - mean2
 
-    aligment_points1 = np.zeros((0,3))
-    aligment_points2 = np.zeros((0,3))
-
-    for chain1, chain2 in zip(P1, P2_Reorder):
-        for i in atoms_to_be_aligned1[chain1]:
-            aligment_points1 = np.vstack((aligment_points1, P1[chain1][i-1]))
-        for i in atoms_to_be_aligned2[chain2]:
-            aligment_points2 = np.vstack((aligment_points2, P2_Reorder[chain2][i-1]))
-
-    aligment_points1 = aligment_points1[1:,:]
-    aligment_points2 = aligment_points2[1:,:]
+    # Collect aligned residues using correct 0-based indexing
+    aligment_points1 = np.vstack([P1[c1][atoms_to_be_aligned1[c1]] for c1 in chain_name1])
+    aligment_points2 = np.vstack([P2_Reorder[c2][atoms_to_be_aligned2[c2]] for c2 in chain_name2])
 
     Transformed_points, R, rmsd = Align_3D(aligment_points1, aligment_points2)
-    
+
+    # Pivot point used by Align_3D's internal centering — needed to apply the same
+    # Kabsch transform consistently to non-aligned residues
+    mean_aln2 = np.mean(aligment_points2, axis=0)
+
+    # Apply the full Kabsch transformation to every P2 residue (aligned and non-aligned)
     P = {}
-    start = 0
     for chain1, chain2 in zip(P1, P2_Reorder):
-        P[chain1] = Transformed_points[start:start+len(atoms_to_be_aligned2[chain1])-1]
-        start += len(atoms_to_be_aligned2[chain1])
-        
-        # Find the difference between the two sets
-        atoms_not_aligned = set(range(0,len(P1[chain1]))) - set(atoms_to_be_aligned2[chain1])
-
-        # Convert the set to a list
-        atoms_not_aligned = sorted(list(atoms_not_aligned))
-
-        for i,j in enumerate(reversed(atoms_not_aligned)):
-            P[chain1] = np.insert(P[chain1], j-(5-i), R@P2_Reorder[chain2][j-1], axis=0)
+        n2 = len(P2_Reorder[chain2])
+        P[chain1] = np.zeros((n2, 3))
+        for j in range(n2):
+            P[chain1][j] = R @ (P2_Reorder[chain2][j] - mean_aln2) + mean_aln2
 
     for chain in P1:
         P1[chain] = P1[chain].tolist()
@@ -155,33 +144,68 @@ def structural_alignment(pdb_file1, pdb_file2, makefigure = 1):
         repar[chain] = np.linspace(0,len(P[chain])-1,len(P[chain])).tolist()
         repar1[chain] = np.linspace(0,len(P1[chain])-1,len(P1[chain])).tolist()
 
-    indices_target = {}
-    indices_query = {}
-    
+    def fill_coord_gaps(coord_list, repar_list, gap_aln_positions, aln_str_gapped):
+        """
+        Insert interpolated virtual residues into coord_list and repar_list wherever
+        aln_str_gapped has a '-' (meaning the other chain has a residue here but this
+        one does not).  gap_aln_positions are the alignment-string column indices of
+        those '-' characters.
+
+        The previous implementation used alignment-string positions directly as array
+        indices, which crashes when sequences differ in length (alignment string longer
+        than residue array).  This version converts each gap column to the correct
+        0-based residue index before accessing the coordinate arrays.
+        """
+        if not gap_aln_positions:
+            return coord_list, repar_list
+
+        result_c = list(coord_list)
+        result_r = list(repar_list)
+        offset = 0  # how many virtual points have been inserted so far
+
+        i = 0
+        while i < len(gap_aln_positions):
+            # Collect a run of consecutive alignment-string gap positions
+            j = i
+            while j + 1 < len(gap_aln_positions) and gap_aln_positions[j+1] == gap_aln_positions[j] + 1:
+                j += 1
+            N = j - i + 1  # number of gaps in this run
+
+            # Convert the first alignment-string position of the run to the residue
+            # index in the array being filled: count non-gap chars before it.
+            r = sum(1 for c in aln_str_gapped[:gap_aln_positions[i]] if c != '-')
+            pos = r + offset  # adjusted position after earlier insertions
+
+            n = len(result_c)
+            if 0 < pos < n:
+                pt0 = np.array(result_c[pos - 1])
+                pt1 = np.array(result_c[pos])
+                rp0, rp1 = result_r[pos - 1], result_r[pos]
+            elif pos == 0:
+                pt0 = pt1 = np.array(result_c[0])
+                rp0 = rp1 = result_r[0]
+            else:
+                pt0 = pt1 = np.array(result_c[-1])
+                rp0 = rp1 = result_r[-1]
+
+            # Insert N virtual points in reversed order so the final array is in
+            # ascending order (pt0 → interpolated points → pt1).
+            for k in range(N, 0, -1):
+                alpha = k / (N + 1)
+                result_c.insert(pos, ((1 - alpha) * pt0 + alpha * pt1).tolist())
+                result_r.insert(pos, rp0 + alpha * (rp1 - rp0))
+
+            offset += N
+            i = j + 1
+
+        return result_c, result_r
+
     for key in P:
-        indices_target[key] = [i for i, x in enumerate(align[key][1]) if x == "-"]
-        indices_query[key]  = [i for i, x in enumerate(align[key][0]) if x == "-"]
+        gaps_in_P  = [i for i, x in enumerate(align[key][1]) if x == "-"]
+        gaps_in_P1 = [i for i, x in enumerate(align[key][0]) if x == "-"]
 
-        Factor_hole_target, Index_hole_target  = find_increasing_subarrays(indices_target[key])
-        Factor_hole_query, Index_hole_query = find_increasing_subarrays(indices_query[key])
-
-        for i in reversed(range(len(indices_target[key]))):
-            index = indices_target[key][i]
-            alpha = Factor_hole_target[i]/(Index_hole_target[i]+1)
-            new_point = [alpha*P[key][index][0]+(1-alpha)*P[key][index+1][0],
-                        alpha*P[key][index][1]+(1-alpha)*P[key][index+1][1],
-                        alpha*P[key][index][2]+(1-alpha)*P[key][index+1][2]]
-            P[key].insert(index+1,new_point)
-            repar[key].insert(index+1-(Factor_hole_target[i]-1),index+alpha-(Factor_hole_target[i]-1))
-
-        for i in reversed(range(len(indices_query[key]))):
-            index = indices_query[key][i]
-            alpha = Factor_hole_query[i]/(Index_hole_query[i]+1)
-            new_point = [alpha*P1[key][index][0]+(1-alpha)*P1[key][index+1][0],
-                        alpha*P1[key][index][1]+(1-alpha)*P1[key][index+1][1],
-                        alpha*P1[key][index][2]+(1-alpha)*P1[key][index+1][2]]
-            P1[key].insert(index+1,new_point)
-            repar1[key].insert(index+1-(Factor_hole_query[i]-1),index+alpha-(Factor_hole_query[i]-1))
+        P[key],  repar[key]  = fill_coord_gaps(P[key],  repar[key],  gaps_in_P,  align[key][1])
+        P1[key], repar1[key] = fill_coord_gaps(P1[key], repar1[key], gaps_in_P1, align[key][0])
 
     L1 = {}
     L2 = {}
