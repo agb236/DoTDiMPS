@@ -11,7 +11,7 @@ plotly==5.9.0
 #datashader==0.14.1
 #panel==0.13.1
 #nglview==3.1.1
-biopython==1.83
+biopython==1.85
 open3d==0.19.0
 scikit-learn==1.0.2
 #cvxpy==1.2.1
